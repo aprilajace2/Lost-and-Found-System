@@ -1,0 +1,559 @@
+<!-- Search Results Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .header_section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 1.8rem;
+      text-decoration: none;
+      margin: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    .back-btn:hover {
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+
+    .main-content {
+      margin-top: 90px;
+      padding: 30px;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .search-header h1 {
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .search-query {
+      color: #667eea;
+      font-weight: 700;
+    }
+
+    .no-results {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 60px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .no-results p {
+      font-size: 1.3rem;
+      color: #6c757d;
+      margin: 0;
+    }
+
+    .items-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 25px;
+    }
+
+    .item-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .item-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .item-type {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .item-type.lost {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+    }
+
+    .item-type.found {
+      background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+      color: white;
+    }
+
+    .item-description {
+      font-size: 1.15rem;
+      color: #495057;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .item-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+
+    .meta-label {
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .poster-info {
+      margin-bottom: 20px;
+    }
+
+    .poster-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .poster-link:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .item-image {
+      margin: 20px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-image img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .item-image:hover img {
+      transform: scale(1.05);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .view-details-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .view-details-btn:hover {
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .comment-form {
+      background: rgba(102, 126, 234, 0.05);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+    }
+
+    .comment-form textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 80px;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .comment-form textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .comment-submit-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .comment-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .comments-section {
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 2px solid #e9ecef;
+    }
+
+    .comments-header {
+      font-weight: 700;
+      color: #495057;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+
+    .comments-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .comment-item {
+      background: rgba(102, 126, 234, 0.03);
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border-left: 3px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .comment-item:hover {
+      background: rgba(102, 126, 234, 0.08);
+      transform: translateX(5px);
+    }
+
+    .comment-author {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .comment-author:hover {
+      color: #764ba2;
+    }
+
+    .comment-text {
+      color: #495057;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .comment-date {
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    .view-all-comments {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .view-all-comments:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .item-card:nth-child(1) { animation-delay: 0.1s; }
+    .item-card:nth-child(2) { animation-delay: 0.2s; }
+    .item-card:nth-child(3) { animation-delay: 0.3s; }
+    .item-card:nth-child(4) { animation-delay: 0.4s; }
+    .item-card:nth-child(5) { animation-delay: 0.5s; }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px 15px;
+      }
+
+      .search-header {
+        padding: 20px;
+      }
+
+      .search-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .item-card {
+        padding: 20px;
+      }
+
+      .item-header {
+        flex-direction: column;
+      }
+
+      .item-meta {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .view-details-btn,
+      .delete-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .back-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>  
+  <div class="header_section">
+    <div>
+      <a class="navbar-brand" href="/dashboard">Lost & Found</a>
+    </div>
+    <div>
+      <a href="/dashboard" class="back-btn">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="search-header">
+      <h1>Search Results for "<span class="search-query"><%= query %></span>"</h1>
+    </div>
+
+    <% if (items.length === 0) { %>
+      <div class="no-results">
+        <p>No items found matching your search.</p>
+      </div>
+    <% } else { %>
+      <ul class="items-list">
+        <% items.forEach(item => { %>
+          <li class="item-card">
+            <div class="item-header">
+              <span class="item-type <%= item.type.toLowerCase() %>"><%= item.type %></span>
+            </div>
+
+            <div class="item-description">
+              <%= item.description %>
+            </div>
+
+            <div class="item-meta">
+              <div class="meta-item">
+                <span class="meta-label">Category:</span>
+                <span><%= item.category %></span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Location:</span>
+                <span><%= item.location %></span>
+              </div>
+            </div>
+
+            <% if (item.poster_name) { %>
+              <div class="poster-info">
+                <span class="meta-label">Posted by:</span>
+                <a href="/profile/<%= item.user_id %>" class="poster-link"><%= item.poster_name %></a>
+              </div>
+            <% } %>
+
+            <% if (item.image) { %>
+              <div class="item-image">
+                <img src="/uploads/<%= item.image %>" alt="Item Image">
+              </div>
+            <% } %>
+
+            <div class="action-buttons">
+              <a href="/item/<%= item.id %>" class="view-details-btn">View Details & Comments</a>
+              
+              <% if (item.user_id === userId) { %>
+                <form action="/item/<%= item.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?')" style="margin: 0;">
+                  <button type="submit" class="delete-btn">Delete</button>
+                </form>
+              <% } %>
+            </div>
+
+            <div class="comment-form">
+              <form action="/comment" method="POST">
+                <input type="hidden" name="item_id" value="<%= item.id %>">
+                <textarea name="comment" placeholder="Add a comment..." required></textarea>
+                <button type="submit" class="comment-submit-btn">Comment</button>
+              </form>
+            </div>
+
+            <% if (item.comments && item.comments.length > 0) { %>
+              <div class="comments-section">
+                <h4 class="comments-header">Recent Comments:</h4>
+                <ul class="comments-list">
+                  <% item.comments.slice(0, 2).forEach(comment => { %>
+                    <li class="comment-item">
+                      <a href="/profile/<%= comment.user_id %>" class="comment-author"><%= comment.username %></a>
+                      <div class="comment-text"><%= comment.comment %></div>
+                      <div class="comment-date"><%= comment.created_at %></div>
+                    </li>
+                  <% }); %>
+                </ul>
+                <% if (item.comments.length > 2) { %>
+                  <a href="/item/<%= item.id %>" class="view-all-comments">View all <%= item.comments.length %> comments</a>
+                <% } %>
+              </div>
+            <% } %>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+</body>
+</html>
